@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 // Импорт и создание переменных
 
 const { PORT, DB_URL } = require('./config');
-const { createUser } = require('./controllers/users');
+const { createUser, login } = require('./controllers/users');
 const { auth, clearCookie } = require('./middlewares/auth');
 const { userRouter } = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
@@ -27,6 +27,7 @@ mongoose.connect(DB_URL, {
 // Подключение маршрутов
 
 app.post('/signup', createUser);
+app.post('/signin', login);
 app.use(auth);
 app.use('/signout', clearCookie);
 

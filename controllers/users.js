@@ -4,6 +4,7 @@ const { MONGO_DUPLICATE_ERROR_CODE, SALT_ROUNDS } = require('../config');
 const generateToken = require('../utils/jwt');
 const NotFoundError = require('../utils/NotFoundError');
 const DuplicateError = require('../utils/DuplicateError');
+const AuthError = require('../utils/AuthError');
 
 const createUser = async (req, res, next) => {
   try {
@@ -33,6 +34,32 @@ const createUser = async (req, res, next) => {
     if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
       return next(new DuplicateError('Такой пользователь уже существует'));
     }
+    next(err);
+  }
+};
+
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email })
+      .select('+password')
+      .orFail(new AuthError('Неправильный логин или пароль'));
+    const matched = await bcrypt.compare(password, user.password);
+    if (!matched) {
+      throw new AuthError('Неправильный логин или пароль');
+    }
+    const token = generateToken({
+      email: user.email,
+      name: user.name,
+      _id: user._id,
+    });
+    return res
+      .cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+      })
+      .send({ email: user.email, name: user.name });
+  } catch (err) {
     next(err);
   }
 };
@@ -77,6 +104,7 @@ const deleteUser = async (req, res, next) => {
 
 module.exports = {
   createUser,
+  login,
   getUser,
   updateUser,
   deleteUser,
