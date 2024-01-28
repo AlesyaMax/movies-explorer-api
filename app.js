@@ -1,14 +1,40 @@
-require('dotenv').config();
+// Подключение модулей
+
+// require("dotenv").config();
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 
-const { PORT, DB_URL } = process.env;
+// Импорт и создание переменных
+
+const { PORT, DB_URL } = require('./config');
+const { createUser } = require('./controllers/users');
+const { auth, clearCookie } = require('./middlewares/auth');
+const { userRouter } = require('./routes/index');
+const handleErrors = require('./middlewares/errors');
+// const { PORT, DB_URL } = process.env;
+
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+// Подключение к базе данных
 
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,
 });
 
-app.listen(PORT, () => {
-  console.log({ message: 'i work just fine' });
-});
+// Подключение маршрутов
+
+app.post('/signup', createUser);
+app.use(auth);
+app.use('/signout', clearCookie);
+
+app.use(userRouter);
+
+// Обработка ошибок
+app.use(errors());
+
+app.use(handleErrors);
+
+app.listen(PORT);
