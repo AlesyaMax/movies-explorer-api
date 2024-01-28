@@ -12,6 +12,7 @@ const { PORT, DB_URL } = require('./config');
 const { createUser, login } = require('./controllers/users');
 const { auth, clearCookie } = require('./middlewares/auth');
 const { userRouter } = require('./routes/index');
+const { moviesRouter } = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
 // const { PORT, DB_URL } = process.env;
 
@@ -32,6 +33,7 @@ app.use(auth);
 app.use('/signout', clearCookie);
 
 app.use(userRouter);
+app.use(moviesRouter);
 
 // Обработка ошибок
 app.use(errors());
