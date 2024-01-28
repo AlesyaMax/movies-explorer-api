@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const { PORT, DB_URL } = require('./config');
 const { createUser, login } = require('./controllers/users');
 const { auth, clearCookie } = require('./middlewares/auth');
+const { validateSignup, validateSignin } = require('./middlewares/validation');
 const { userRouter } = require('./routes/index');
 const { moviesRouter } = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
@@ -27,8 +28,8 @@ mongoose.connect(DB_URL, {
 
 // Подключение маршрутов
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', validateSignup, createUser);
+app.post('/signin', validateSignin, login);
 app.use(auth);
 app.use('/signout', clearCookie);
 

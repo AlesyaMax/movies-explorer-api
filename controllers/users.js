@@ -66,7 +66,7 @@ const login = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const user = await User.findOne(req.email).orFail(
+    const user = await User.findOne({ _id: req.user._id }).orFail(
       () => new NotFoundError('Пользователь не найден'),
     );
     return res.send({ email: user.email, name: user.name });
