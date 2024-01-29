@@ -57,7 +57,7 @@ const deleteMovies = async (req, res, next) => {
     const movieToDelete = await Movie.findById({ _id }).orFail(
       new NotFoundError('Фильм не найден'),
     );
-    if (req.user._id !== '{movieToDelete.owner}') {
+    if (req.user._id !== `${movieToDelete.owner}`) {
       throw new AccessError('Нет прав на удаление фильма');
     }
     await movieToDelete.deleteOne();
