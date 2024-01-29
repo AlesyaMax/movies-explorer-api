@@ -1,5 +1,8 @@
+const mongoose = require('mongoose');
 const Movie = require('../models/movie');
 const NotFoundError = require('../utils/NotFoundError');
+const ValidationError = require('../utils/ValidationError');
+const AccessError = require('../utils/AccessError');
 
 const createMovies = async (req, res, next) => {
   try {
@@ -32,6 +35,9 @@ const createMovies = async (req, res, next) => {
     });
     return res.send(movie);
   } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(new ValidationError(err.message));
+    }
     next(err);
   }
 };
@@ -48,9 +54,13 @@ const getMovies = async (req, res, next) => {
 const deleteMovies = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    await Movie.findByIdAndDelete({ _id }).orFail(
+    const movieToDelete = await Movie.findById({ _id }).orFail(
       new NotFoundError('Фильм не найден'),
     );
+    if (req.user._id !== '{movieToDelete.owner}') {
+      throw new AccessError('Нет прав на удаление фильма');
+    }
+    await movieToDelete.deleteOne();
     return res.send({ message: 'Фильм успешно удален' });
   } catch (err) {
     next(err);

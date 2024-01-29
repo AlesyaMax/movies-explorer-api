@@ -1,10 +1,12 @@
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const { MONGO_DUPLICATE_ERROR_CODE, SALT_ROUNDS } = require('../config');
 const generateToken = require('../utils/jwt');
 const NotFoundError = require('../utils/NotFoundError');
 const DuplicateError = require('../utils/DuplicateError');
 const AuthError = require('../utils/AuthError');
+const ValidationError = require('../utils/ValidationError');
 
 const createUser = async (req, res, next) => {
   try {
@@ -33,6 +35,9 @@ const createUser = async (req, res, next) => {
   } catch (err) {
     if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
       return next(new DuplicateError('Такой пользователь уже существует'));
+    }
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(new ValidationError(err.message));
     }
     next(err);
   }
