@@ -15,6 +15,8 @@ const { validateSignup, validateSignin } = require('./middlewares/validation');
 const { userRouter } = require('./routes/index');
 const { moviesRouter } = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./utils/NotFoundError');
 // const { PORT, DB_URL } = process.env;
 
 const app = express();
@@ -27,6 +29,7 @@ mongoose.connect(DB_URL, {
 });
 
 // Подключение маршрутов
+app.use(requestLogger);
 
 app.post('/signup', validateSignup, createUser);
 app.post('/signin', validateSignin, login);
@@ -36,7 +39,13 @@ app.use('/signout', clearCookie);
 app.use(userRouter);
 app.use(moviesRouter);
 
+app.use('/', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
+});
+
 // Обработка ошибок
+app.use(errorLogger);
+
 app.use(errors());
 
 app.use(handleErrors);
