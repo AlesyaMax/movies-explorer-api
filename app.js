@@ -18,11 +18,13 @@ const { moviesRouter } = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./utils/NotFoundError');
+const limiter = require('./middlewares/limiter');
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
+app.use(limiter);
 
 // Подключение к базе данных
 
