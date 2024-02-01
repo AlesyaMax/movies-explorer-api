@@ -1,5 +1,5 @@
 const PORT = 3000;
-const DB_URL = 'mongodb://localhost:27017/bitfilmsdb';
+const DEV_DB_URL = 'mongodb://localhost:27017/bitfilmsdb';
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SALT_ROUNDS = 10;
 const SECRET_KEY = 'dev-secret';
@@ -10,7 +10,7 @@ const REGEX_ID = /[0-9a-f]{24}/;
 
 module.exports = {
   PORT,
-  DB_URL,
+  DEV_DB_URL,
   MONGO_DUPLICATE_ERROR_CODE,
   SALT_ROUNDS,
   SECRET_KEY,

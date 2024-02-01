@@ -9,7 +9,7 @@ const helmet = require('helmet');
 
 // Импорт и создание переменных
 
-const { PORT, DB_URL } = require('./config');
+const { PORT, DEV_DB_URL } = require('./config');
 const { auth } = require('./middlewares/auth');
 const {
   userRouter,
@@ -21,6 +21,8 @@ const handleErrors = require('./middlewares/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const limiter = require('./middlewares/limiter');
 
+const { NODE_ENV, PROD_DB_URL } = process.env;
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -29,7 +31,7 @@ app.use(limiter);
 
 // Подключение к базе данных
 
-mongoose.connect(DB_URL, {
+mongoose.connect(NODE_ENV === 'production' ? PROD_DB_URL : DEV_DB_URL, {
   useNewUrlParser: true,
 });
 
