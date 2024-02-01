@@ -10,14 +10,15 @@ const helmet = require('helmet');
 // Импорт и создание переменных
 
 const { PORT, DB_URL } = require('./config');
-const { createUser, login } = require('./controllers/users');
-const { auth, clearCookie } = require('./middlewares/auth');
-const { validateSignup, validateSignin } = require('./middlewares/validation');
-const { userRouter } = require('./routes/index');
-const { moviesRouter } = require('./routes/index');
+const { auth } = require('./middlewares/auth');
+const {
+  userRouter,
+  moviesRouter,
+  authRouter,
+  notFoundPageRouter,
+} = require('./routes/index');
 const handleErrors = require('./middlewares/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const NotFoundError = require('./utils/NotFoundError');
 const limiter = require('./middlewares/limiter');
 
 const app = express();
@@ -35,18 +36,12 @@ mongoose.connect(DB_URL, {
 // Подключение маршрутов
 
 app.use(requestLogger);
+app.use(authRouter);
 
-app.post('/signup', validateSignup, createUser);
-app.post('/signin', validateSignin, login);
-app.use(auth);
-app.use('/signout', clearCookie);
+app.use(auth, userRouter);
+app.use(auth, moviesRouter);
 
-app.use(userRouter);
-app.use(moviesRouter);
-
-app.use('/', (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
+app.use(notFoundPageRouter);
 
 // Обработка ошибок
 app.use(errorLogger);
