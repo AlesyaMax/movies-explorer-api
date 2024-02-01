@@ -39,7 +39,7 @@ const createUser = async (req, res, next) => {
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new ValidationError(err.message));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -65,7 +65,7 @@ const login = async (req, res, next) => {
       })
       .send({ email: user.email, name: user.name });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -76,7 +76,7 @@ const getUser = async (req, res, next) => {
     );
     return res.send({ email: user.email, name: user.name });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -90,20 +90,7 @@ const updateUser = async (req, res, next) => {
     ).orFail(new NotFoundError('Пользователь не найден'));
     return res.send(updatedUser);
   } catch (err) {
-    next(err);
-  }
-};
-
-// Вспомогательная функция, не требуется в дипломной работе
-const deleteUser = async (req, res, next) => {
-  try {
-    const { _id } = req.body;
-    await User.findOneAndDelete(_id).orFail(
-      new NotFoundError('Пользователь не найден'),
-    );
-    return res.send('Пользователь удален');
-  } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -112,5 +99,4 @@ module.exports = {
   login,
   getUser,
   updateUser,
-  deleteUser,
 };

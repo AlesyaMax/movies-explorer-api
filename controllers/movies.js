@@ -38,7 +38,7 @@ const createMovies = async (req, res, next) => {
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new ValidationError(err.message));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -47,7 +47,7 @@ const getMovies = async (req, res, next) => {
     const movies = await Movie.find({ owner: req.user._id });
     return res.send(movies);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -63,7 +63,7 @@ const deleteMovies = async (req, res, next) => {
     await movieToDelete.deleteOne();
     return res.send({ message: 'Фильм успешно удален' });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
