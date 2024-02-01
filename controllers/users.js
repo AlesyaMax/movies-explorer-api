@@ -1,7 +1,13 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('../models/user');
-const { MONGO_DUPLICATE_ERROR_CODE, SALT_ROUNDS } = require('../config');
+const {
+  MONGO_DUPLICATE_ERROR_CODE,
+  SALT_ROUNDS,
+  duplicateErrorMessage,
+  authErrorMessage,
+  userNotFoundMessage,
+} = require('../config');
 const generateToken = require('../utils/jwt');
 const NotFoundError = require('../utils/NotFoundError');
 const DuplicateError = require('../utils/DuplicateError');
@@ -34,7 +40,7 @@ const createUser = async (req, res, next) => {
       });
   } catch (err) {
     if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
-      return next(new DuplicateError('Такой пользователь уже существует'));
+      return next(new DuplicateError(duplicateErrorMessage));
     }
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new ValidationError(err.message));
@@ -48,10 +54,10 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email })
       .select('+password')
-      .orFail(new AuthError('Неправильный логин или пароль'));
+      .orFail(new AuthError(authErrorMessage));
     const matched = await bcrypt.compare(password, user.password);
     if (!matched) {
-      throw new AuthError('Неправильный логин или пароль');
+      throw new AuthError(authErrorMessage);
     }
     const token = generateToken({
       email: user.email,
@@ -72,7 +78,7 @@ const login = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user._id }).orFail(
-      () => new NotFoundError('Пользователь не найден'),
+      () => new NotFoundError(userNotFoundMessage),
     );
     return res.send({ email: user.email, name: user.name });
   } catch (err) {
@@ -87,11 +93,11 @@ const updateUser = async (req, res, next) => {
       req.user._id,
       { email, name },
       { new: true, runValidators: true },
-    ).orFail(new NotFoundError('Пользователь не найден'));
+    ).orFail(new NotFoundError(userNotFoundMessage));
     return res.send(updatedUser);
   } catch (err) {
     if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
-      return next(new DuplicateError('Такой пользователь уже существует'));
+      return next(new DuplicateError(duplicateErrorMessage));
     }
     if (err instanceof mongoose.Error.ValidationError) {
       return next(

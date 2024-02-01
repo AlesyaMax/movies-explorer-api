@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const NotFoundError = require('../utils/NotFoundError');
+const { pageNotFoundMessage } = require('../config');
 
 router.use('/', (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
+  next(new NotFoundError(pageNotFoundMessage));
 });
 
 module.exports = router;

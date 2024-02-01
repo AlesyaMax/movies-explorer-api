@@ -8,6 +8,19 @@ const REGEX_RU = /^[а-яА-ЯёЁ\d.,:;?!\-()+=%#№$^&*\s]+$/;
 const REGEX_EN = /^[\w.,:;?!\-()+=%#№$^&*\s]+$/;
 const REGEX_ID = /[0-9a-f]{24}/;
 
+const movieNotFoundMessage = 'Фильм не найден';
+const accessErrorMessage = 'Нет прав на удаление фильма';
+const movieDeletedMessage = 'Фильм успешно удален';
+const duplicateErrorMessage = 'Такой пользователь уже существует';
+const authErrorMessage = 'Неправильный логин или пароль';
+const userNotFoundMessage = 'Пользователь не найден';
+const authRequiredMessage = 'Необходимо авторизоваться';
+const signoutMessage = 'Пользователь вышел из аккаунта';
+const serverErrorMessage = 'Ошибка на стороне сервера';
+const incorrectUrlMessage = 'Некорректный URL';
+const incorrectEmailMessage = 'Некорректно указана почта';
+const pageNotFoundMessage = 'Страница не найдена';
+
 module.exports = {
   PORT,
   DEV_DB_URL,
@@ -18,4 +31,16 @@ module.exports = {
   REGEX_RU,
   REGEX_EN,
   REGEX_ID,
+  movieNotFoundMessage,
+  accessErrorMessage,
+  movieDeletedMessage,
+  duplicateErrorMessage,
+  authErrorMessage,
+  userNotFoundMessage,
+  authRequiredMessage,
+  signoutMessage,
+  serverErrorMessage,
+  incorrectUrlMessage,
+  incorrectEmailMessage,
+  pageNotFoundMessage,
 };
