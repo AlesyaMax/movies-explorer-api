@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
       NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY,
     );
   } catch (err) {
-    next(err);
+    next(new AuthError('Необходимо авторизоваться'));
   }
 
   req.user = payload;

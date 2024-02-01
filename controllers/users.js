@@ -90,6 +90,18 @@ const updateUser = async (req, res, next) => {
     ).orFail(new NotFoundError('Пользователь не найден'));
     return res.send(updatedUser);
   } catch (err) {
+    if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
+      return next(new DuplicateError('Такой пользователь уже существует'));
+    }
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(
+        new ValidationError(
+          `${Object.values(err.errors)
+            .map((error) => error.message)
+            .join(', ')}`,
+        ),
+      );
+    }
     return next(err);
   }
 };
