@@ -43,6 +43,7 @@ app.use(
       'https://movies-explorer.am.nomoredomainsmonster.ru',
     ],
     credentials: true,
+    methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE'],
   }),
 );
 
