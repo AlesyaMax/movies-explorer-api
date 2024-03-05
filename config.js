@@ -1,4 +1,4 @@
-const PORT = 3000;
+const PORT = 3001;
 const DEV_DB_URL = 'mongodb://localhost:27017/bitfilmsdb';
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SALT_ROUNDS = 10;

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 
 // Импорт и создание переменных
 
@@ -28,6 +29,22 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(limiter);
+
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:3001',
+      'https://localhost:3001',
+      'http://api.movies-explorer.am.nomoredomainsmonster.ru',
+      'https://api.movies-explorer.am.nomoredomainsmonster.ru',
+      'http://movies-explorer.am.nomoredomainsmonster.ru',
+      'https://movies-explorer.am.nomoredomainsmonster.ru',
+    ],
+    credentials: true,
+  }),
+);
 
 // Подключение к базе данных
 

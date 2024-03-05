@@ -69,7 +69,7 @@ const login = async (req, res, next) => {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
       })
-      .send({ email: user.email, name: user.name });
+      .send({ email: user.email, name: user.name, _id: user._id });
   } catch (err) {
     return next(err);
   }
@@ -80,7 +80,7 @@ const getUser = async (req, res, next) => {
     const user = await User.findOne({ _id: req.user._id }).orFail(
       () => new NotFoundError(userNotFoundMessage),
     );
-    return res.send({ email: user.email, name: user.name });
+    return res.send({ email: user.email, name: user.name, _id: user._id });
   } catch (err) {
     return next(err);
   }
