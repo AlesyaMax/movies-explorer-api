@@ -4,7 +4,7 @@ const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SALT_ROUNDS = 10;
 const SECRET_KEY = 'dev-secret';
 const REGEX_URL = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
-const REGEX_RU = /^[а-яА-ЯёЁ\d.,:;?!\-()+=%#№$^&*\s]+$/;
+const REGEX_RU = /^[\wа-яА-ЯёЁ\d.,:;?!\-()+=%#№$^&*\s]+$/;
 const REGEX_EN = /^[\w.,:;?!\-()+=%#№$^&*\s]+$/;
 const REGEX_ID = /[0-9a-f]{24}/;
 
